@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 04 Tem 2024, 14:04:52
+-- Üretim Zamanı: 05 Tem 2024, 13:08:10
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -77,6 +77,21 @@ CREATE TABLE `labs` (
   `lab_name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `tip_tbl`
+--
+
+CREATE TABLE `tip_tbl` (
+  `tip_no` varchar(50) NOT NULL,
+  `isletim_sistemi` text NOT NULL,
+  `ekran_kartı` text NOT NULL,
+  `RAM` varchar(50) NOT NULL,
+  `sistem_türü` varchar(50) NOT NULL,
+  `islemci` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Dökümü yapılmış tablolar için indeksler
 --
@@ -106,6 +121,12 @@ ALTER TABLE `kullanici`
 --
 ALTER TABLE `labs`
   ADD PRIMARY KEY (`lab_id`);
+
+--
+-- Tablo için indeksler `tip_tbl`
+--
+ALTER TABLE `tip_tbl`
+  ADD PRIMARY KEY (`tip_no`);
 
 --
 -- Dökümü yapılmış tablolar için AUTO_INCREMENT değeri
