@@ -59,6 +59,7 @@
                             
                             echo "<tr>";
                             echo "<td>{$computer_row['bilg_id']}</td>";
+                            echo "<td>{$computer_row['tip']}</td>";
                             echo "<td>{$computer_row['isletim_sistemi']}</td>";
                             echo "<td>{$computer_row['sistem_tür']}</td>";
                             echo "<td>{$computer_row['islemci']}</td>";
