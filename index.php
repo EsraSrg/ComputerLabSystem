@@ -52,7 +52,7 @@
                             echo "<div class='computer-table'>";
                             echo "<table class='table table-bordered'>";
                             echo "<thead class='thead-light'>";
-                            echo "<tr><th scope='col'>Bilgisayar ID</th><th scope='col'>Tip</th><th scope='col'>İşletim Sistemi</th><th scope='col'>Sistem Türü</th><th scope='col'>İşlemci</th><th scope='col'>RAM</th><th scope='col'>Ekran Kartı</th><th scope='col'>Yüklü Programlar</th><th scope='col'>Durum</th></tr>";
+                            echo "<tr><th scope='col'>Bilgisayar No</th><th scope='col'>Tip</th><th scope='col'>İşletim Sistemi</th><th scope='col'>Sistem Türü</th><th scope='col'>İşlemci</th><th scope='col'>RAM</th><th scope='col'>Ekran Kartı</th><th scope='col'>Yüklü Programlar</th><th scope='col'>Durum</th></tr>";
                             echo "</thead>";
                             echo "<tbody>";
                             
@@ -61,7 +61,7 @@
                                 $status = ($computer_row['status'] == 'arızalı') ? 'Arızalı' : 'Çalışıyor';
                                 
                                 echo "<tr>";
-                                echo "<td>{$computer_row['bilg_id']}</td>";
+                                echo "<td>{$computer_row['bilg_no']}</td>";
                                 echo "<td><a href='#' class='computer-detail' data-tip='{$computer_row['tip']}'>{$computer_row['tip']}</a></td>";
                                 echo "<td>{$computer_row['isletim_sistemi']}</td>";
                                 echo "<td>{$computer_row['sistem_tür']}</td>";
@@ -102,7 +102,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="computerModalLabel">Bilgisayar Detayları</h5>
+                    <h5 class="modal-title" id="computerModalLabel">Tip Detayları</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

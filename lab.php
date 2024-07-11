@@ -49,7 +49,7 @@
                         echo "<div class='computer-table'>";
                         echo "<table class='table table-bordered'>";
                         echo "<thead class='thead-light'>";
-                        echo "<tr><th scope='col'>Bilgisayar ID</th><th scope='col'>İşletim Sistemi</th><th scope='col'>Sistem Türü</th><th scope='col'>İşlemci</th><th scope='col'>RAM</th><th scope='col'>Ekran Kartı</th><th scope='col'>Yüklü Programlar</th><th scope='col'>Durum</th></tr>";
+                        echo "<tr><th scope='col'>Bilgisayar No</th><th scope='col'>İşletim Sistemi</th><th scope='col'>Sistem Türü</th><th scope='col'>İşlemci</th><th scope='col'>RAM</th><th scope='col'>Ekran Kartı</th><th scope='col'>Yüklü Programlar</th><th scope='col'>Durum</th></tr>";
                         echo "</thead>";
                         echo "<tbody>";
                         
@@ -58,7 +58,7 @@
                             $status = ($computer_row['status'] == 'arızalı') ? 'Arızalı' : 'Normal';
                             
                             echo "<tr>";
-                            echo "<td>{$computer_row['bilg_id']}</td>";
+                            echo "<td>{$computer_row['bilg_no']}</td>";
                             echo "<td>{$computer_row['tip']}</td>";
                             echo "<td>{$computer_row['isletim_sistemi']}</td>";
                             echo "<td>{$computer_row['sistem_tür']}</td>";
