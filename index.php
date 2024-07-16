@@ -5,7 +5,6 @@
     <title>Ege Meslek Yüksekokulu Bilgisayar Laboratuvarları</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        
         .header-with-icon {
             display: flex;
             align-items: center;
@@ -23,8 +22,8 @@
 </head>
 <body>
     <div class="container">
-        <div class="header-with-icon" >
-            <img src="images/ege.icon.png" >
+        <div class="header-with-icon">
+            <img src="images/ege.icon.png" alt="Ege İkonu">
             <h1>Ege Meslek Yüksekokulu Bilgisayar Laboratuvarları</h1>
         </div>
         
@@ -44,8 +43,33 @@
                     if (isset($_GET['lab_id']) && $_GET['lab_id'] == $row['lab_id']) {
                         $lab_id = $row['lab_id'];
                         
-                        // Her laboratuvar için bilgisayarları sorguluyoruz
+                        // Filter options
+                        $tip = isset($_GET['tip']) ? $_GET['tip'] : '';
+                        $isletim_sistemi = isset($_GET['isletim_sistemi']) ? $_GET['isletim_sistemi'] : '';
+                        $islemci = isset($_GET['islemci']) ? $_GET['islemci'] : '';
+                        $RAM = isset($_GET['RAM']) ? $_GET['RAM'] : '';
+                        $ekran_karti = isset($_GET['ekran_karti']) ? $_GET['ekran_karti'] : '';
+                        
+                        // SQL query for computers
                         $query_computers = "SELECT * FROM bilgisayarlar WHERE lab_id = $lab_id";
+                        
+                        // Add filters to SQL query if set
+                        if (!empty($tip)) {
+                            $query_computers .= " AND tip LIKE '%$tip%'";
+                        }
+                        if (!empty($isletim_sistemi)) {
+                            $query_computers .= " AND isletim_sistemi LIKE '%$isletim_sistemi%'";
+                        }
+                        if (!empty($islemci)) {
+                            $query_computers .= " AND islemci LIKE '%$islemci%'";
+                        }
+                        if (!empty($RAM)) {
+                            $query_computers .= " AND RAM LIKE '%$RAM%'";
+                        }
+                        if (!empty($ekran_karti)) {
+                            $query_computers .= " AND ekran_kartı LIKE '%$ekran_karti%'";
+                        }
+                        
                         $result_computers = $conn->query($query_computers);
                         
                         if ($result_computers->num_rows > 0) {
@@ -87,6 +111,38 @@
             ?>
         </ul>
 
+        <!-- Filtering Section -->
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <h3>Filtrele</h3>
+                <form method="get" action="index.php">
+                    <input type="hidden" name="lab_id" value="<?php echo isset($_GET['lab_id']) ? $_GET['lab_id'] : ''; ?>">
+                    <div class="form-group">
+                        <label for="tip">Tip:</label>
+                        <input type="text" class="form-control" id="tip" name="tip" value="<?php echo isset($_GET['tip']) ? $_GET['tip'] : ''; ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="isletim_sistemi">İşletim Sistemi:</label>
+                        <input type="text" class="form-control" id="isletim_sistemi" name="isletim_sistemi" value="<?php echo isset($_GET['isletim_sistemi']) ? $_GET['isletim_sistemi'] : ''; ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="islemci">İşlemci:</label>
+                        <input type="text" class="form-control" id="islemci" name="islemci" value="<?php echo isset($_GET['islemci']) ? $_GET['islemci'] : ''; ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="RAM">RAM:</label>
+                        <input type="text" class="form-control" id="RAM" name="RAM" value="<?php echo isset($_GET['RAM']) ? $_GET['RAM'] : ''; ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="ekran_karti">Ekran Kartı:</label>
+                        <input type="text" class="form-control" id="ekran_karti" name="ekran_karti" value="<?php echo isset($_GET['ekran_karti']) ? $_GET['ekran_karti'] : ''; ?>">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Filtrele</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Admin Panel or Logout -->
         <div style="position: absolute; top: 10px; right: 10px;">
             <?php if (!isset($_SESSION['user_id'])): ?>
                 <a href="login.php">Admin Paneli</a>
@@ -97,7 +153,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal for Computer Detail -->
     <div class="modal fade" id="computerModal" tabindex="-1" role="dialog" aria-labelledby="computerModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -113,7 +169,8 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -136,5 +193,6 @@
     </script>
 </body>
 </html>
+
 
 

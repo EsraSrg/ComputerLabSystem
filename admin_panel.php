@@ -2,408 +2,142 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Paneli - Lab Yönetimi</title>
+    <title>Admin Paneli - Bilgisayar Yönetimi</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            padding: 20px;
-        }
-        h2 {
-            color: #333;
-        }
-        form {
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 20px;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        select, input[type=text] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        a {
-            display: inline-block;
-            background-color: #008CBA;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-        a:hover {
-            background-color: #005580;
+        
+        .computer-table {
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
-    <h2>Lab Yönetimi</h2>
+    <div class="container">
+        <!-- Çıkış Yap ve Anasayfa Butonları -->
+        <div class="mt-3">
+            <a href="index.php" class="btn btn-primary">Anasayfa</a>
+            <a href="logout.php" class="btn btn-danger float-right">Çıkış Yap</a>
+        </div>
 
-    <!-- View Website Link -->
-    <a href="index.php" target="_blank">Websitesini Görüntüle</a>
-    
-    <!-- Logout Button -->
-    <form action="logout.php" method="post" style="float: right;">
-        <button type="submit" name="logout">Çıkış Yap</button>
-    </form>
-<?php
-// Start session to store login status
-session_start();
+        <div class="header">
+            <h2>Admin Paneli - Bilgisayar Yönetimi</h2>
+        </div>
+        
+        <!-- İşlem Sonucu Mesajı -->
+        <?php if (isset($_GET['message'])): ?>
+            <div class="alert alert-<?php echo $_GET['message_type']; ?>" role="alert">
+                <?php echo $_GET['message']; ?>
+            </div>
+        <?php endif; ?>
+        
+        <!-- Bilgisayar Ekleme Formu -->
+        <div class="card">
+            <div class="card-header">
+                Bilgisayar Ekle
+            </div>
+            <div class="card-body">
+                <form method="post" action="bilgisayar_ekle.php">
+                    <div class="form-group">
+                        <label for="lab_id">Laboratuvar ID:</label>
+                        <input type="text" class="form-control" id="lab_id" name="lab_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bilg_no">Bilgisayar No:</label>
+                        <input type="text" class="form-control" id="bilg_no" name="bilg_no" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tip">Tip:</label>
+                        <input type="text" class="form-control" id="tip" name="tip" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="isletim_sistemi">İşletim Sistemi:</label>
+                        <input type="text" class="form-control" id="isletim_sistemi" name="isletim_sistemi" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sistem_tur">Sistem Türü:</label>
+                        <input type="text" class="form-control" id="sistem_tur" name="sistem_tur" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="islemci">İşlemci:</label>
+                        <input type="text" class="form-control" id="islemci" name="islemci" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="RAM">RAM:</label>
+                        <input type="text" class="form-control" id="RAM" name="RAM" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ekran_karti">Ekran Kartı:</label>
+                        <input type="text" class="form-control" id="ekran_karti" name="ekran_karti" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="yuklu_programlar">Yüklü Programlar:</label>
+                        <textarea class="form-control" id="yuklu_programlar" name="yuklu_programlar" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ekle</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Bilgisayarlar Tablosu -->
+        <div class="card mt-5">
+            <div class="card-header">
+                Bilgisayarlar
+            </div>
+            <div class="card-body">
+                <?php
+                require_once('config.php');
+                
+                // Veritabanından bilgisayarları sorgula
+                $query = "SELECT * FROM bilgisayarlar";
+                $result = $conn->query($query);
+                
+                if ($result->num_rows > 0) {
+                    echo "<div class='table-responsive'>";
+                    echo "<table class='table table-bordered'>";
+                    echo "<thead class='thead-light'>";
+                    echo "<tr><th scope='col'>ID</th><th scope='col'>Laboratuvar ID</th><th scope='col'>Tip</th><th scope='col'>İşletim Sistemi</th><th scope='col'>Sistem Türü</th><th scope='col'>İşlemci</th><th scope='col'>RAM</th><th scope='col'>Ekran Kartı</th><th scope='col'>Yüklü Programlar</th><th scope='col'>Durum</th><th scope='col'>İşlemler</th></tr>";
+                    echo "</thead>";
+                    echo "<tbody>";
+                    
+                    while ($row = $result->fetch_assoc()) {
+                        $status = $row['status'] == 'arizali' ? 'Arızalı' : 'Çalışıyor';
+                        echo "<tr>";
+                        echo "<td>{$row['bilg_id']}</td>";
+                        echo "<td>{$row['lab_id']}</td>";
+                       
+                        echo "<td>{$row['tip']}</td>";
+                        echo "<td>{$row['isletim_sistemi']}</td>";
+                        echo "<td>{$row['sistem_tür']}</td>";
+                        echo "<td>{$row['islemci']}</td>";
+                        echo "<td>{$row['RAM']}</td>";
+                        echo "<td>{$row['ekran_kartı']}</td>";
+                        echo "<td>{$row['yüklü_programlar']}</td>";
+                        echo "<td>{$status}</td>";
+                        echo "<td><a href='bilgisayar_sil.php?bilg_id={$row['bilg_id']}' class='btn btn-danger btn-sm' onclick='return confirm(\"Bu bilgisayarı silmek istediğinize emin misiniz?\")'>Sil</a></td>";
+                        echo "</tr>";
+                    }
+                    
+                    echo "</tbody>";
+                    echo "</table>";
+                    echo "</div>";
+                } else {
+                    echo "<div class='alert alert-warning'>Hiç bilgisayar bulunamadı.</div>";
+                }
+                ?>
+            </div>
+        </div>
+    </div>
 
-// Include database connection file
-require_once 'config.php';
-
-// Function to fetch all labs from the database
-function getAllLabs() {
-    global $conn;
-    $sql = "SELECT * FROM labs";
-    $result = $conn->query($sql);
-    return $result;
-}
-
-// Function to fetch all computers in a lab
-function getLabComputers($lab_id) {
-    global $conn;
-    $sql = "SELECT * FROM bilgisayarlar WHERE lab_id = $lab_id";
-    $result = $conn->query($sql);
-    return $result;
-}
-
-// Function to update lab information
-function updateLab($lab_id, $lab_name) {
-    global $conn;
-    $sql = "UPDATE labs SET lab_name='$lab_name' WHERE lab_id=$lab_id";
-    if ($conn->query($sql) === TRUE) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// Function to delete a lab
-function deleteLab($lab_id) {
-    global $conn;
-    // First, delete all computers in the lab
-    $sql_delete_computers = "DELETE FROM bilgisayarlar WHERE lab_id = $lab_id";
-    if ($conn->query($sql_delete_computers) === TRUE) {
-        // Then, delete the lab itself
-        $sql_delete_lab = "DELETE FROM labs WHERE lab_id = $lab_id";
-        if ($conn->query($sql_delete_lab) === TRUE) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-}
-
-// Function to add a new lab
-function addLab($lab_name) {
-    global $conn;
-    $sql = "INSERT INTO labs (lab_name) VALUES ('$lab_name')";
-    if ($conn->query($sql) === TRUE) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// Function to update computer information
-function updateComputer($bilg_id, $data) {
-    global $conn;
-    $sql = "UPDATE bilgisayarlar SET 
-           
-            lab_id = '{$data['lab_id']}',
-            tip = '{$data['tip']}',
-            isletim_sistemi = '{$data['isletim_sistemi']}',
-            sistem_tür = '{$data['sistem_tür']}',
-            islemci = '{$data['islemci']}',
-            RAM = '{$data['RAM']}',
-            ekran_kartı = '{$data['ekran_kartı']}',
-            yüklü_programlar = '{$data['yüklü_programlar']}',
-            status = '{$data['status']}'
-            WHERE bilg_id = $bilg_id";
-    if ($conn->query($sql) === TRUE) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// Function to delete a computer
-function deleteComputer($bilg_id) {
-    global $conn;
-    $sql = "DELETE FROM bilgisayarlar WHERE bilg_id = $bilg_id";
-    if ($conn->query($sql) === TRUE) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// Function to add a new computer
-function addComputer($data) {
-    global $conn;
-    $sql = "INSERT INTO bilgisayarlar 
-            (lab_id, tip, isletim_sistemi, sistem_tür, islemci, RAM, ekran_kartı, yüklü_programlar, status) 
-            VALUES 
-            ('{$data['lab_id']}', '{$data['tip']}', '{$data['isletim_sistemi']}', '{$data['sistem_tür']}', 
-            '{$data['islemci']}', '{$data['RAM']}', '{$data['ekran_kartı']}', '{$data['yüklü_programlar']}', '{$data['status']}')";
-    if ($conn->query($sql) === TRUE) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// Function to fetch all computer types
-function getAllComputerTypes() {
-    global $conn;
-    $sql = "SELECT * FROM tip_tbl";
-    $result = $conn->query($sql);
-    return $result;
-}
-
-// Handle form submissions
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Update lab form submission
-    if (isset($_POST['update_lab'])) {
-        $lab_id = $_POST['lab_id'];
-        $new_lab_name = $_POST['new_lab_name'];
-        if (updateLab($lab_id, $new_lab_name)) {
-            echo "Lab güncellendi.";
-        } else {
-            echo "Lab güncellenirken hata oluştu.";
-        }
-    }
-
-    // Delete lab form submission
-    if (isset($_POST['delete_lab'])) {
-        $lab_id = $_POST['lab_id'];
-        if (deleteLab($lab_id)) {
-            echo "Lab silindi.";
-        } else {
-            echo "Lab silinirken hata oluştu.";
-        }
-    }
-
-    // Add lab form submission
-    if (isset($_POST['add_lab'])) {
-        $new_lab_name = $_POST['new_lab_name'];
-        if (addLab($new_lab_name)) {
-            echo "Yeni lab eklendi.";
-        } else {
-            echo "Lab eklenirken hata oluştu.";
-        }
-    }
-
-    // Update computer form submission
-    if (isset($_POST['update_computer'])) {
-        $bilg_id = $_POST['bilg_id'];
-        $data = array(
-            'lab_id' => $_POST['lab_id'],
-            'tip' => $_POST['tip'],
-            'isletim_sistemi' => $_POST['isletim_sistemi'],
-            'sistem_tür' => $_POST['sistem_tür'],
-            'islemci' => $_POST['islemci'],
-            'RAM' => $_POST['RAM'],
-            'ekran_kartı' => $_POST['ekran_kartı'],
-            'yüklü_programlar' => $_POST['yüklü_programlar'],
-            'status' => $_POST['status']
-        );
-        if (updateComputer($bilg_id, $data)) {
-            echo "Bilgisayar güncellendi.";
-        } else {
-            echo "Bilgisayar güncellenirken hata oluştu.";
-        }
-    }
-
-    // Delete computer form submission
-    if (isset($_POST['delete_computer'])) {
-        $bilg_id = $_POST['bilg_id'];
-        if (deleteComputer($bilg_id)) {
-            echo "Bilgisayar silindi.";
-        } else {
-            echo "Bilgisayar silinirken hata oluştu.";
-        }
-    }
-
-    // Add computer form submission
-    if (isset($_POST['add_computer'])) {
-        $data = array(
-            'lab_id' => $_POST['lab_id'],
-            'tip' => $_POST['tip'],
-            'isletim_sistemi' => $_POST['isletim_sistemi'],
-            'sistem_tür' => $_POST['sistem_tür'],
-            'islemci' => $_POST['islemci'],
-            'RAM' => $_POST['RAM'],
-            'ekran_kartı' => $_POST['ekran_kartı'],
-            'yüklü_programlar' => $_POST['yüklü_programlar'],
-            'status' => $_POST['status']
-        );
-        if (addComputer($data)) {
-            echo "Yeni bilgisayar eklendi.";
-        } else {
-            echo "Bilgisayar eklenirken hata oluştu.";
-        }
-    }
-}
-
-// Fetch all labs and computer types
-$labs = getAllLabs();
-$computer_types = getAllComputerTypes();
-?>
-
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Paneli - Lab Yönetimi</title>
-    <style>
-        /* Add your CSS styles here */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            padding: 20px;
-        }
-        h2 {
-            color: #333;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <h2>Lab Yönetimi</h2>
-
-    <!-- Update Lab Form -->
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-        <h3>Labları Güncelle</h3>
-        <select name="lab_id">
-            <?php while ($lab = $labs->fetch_assoc()) : ?>
-                <option value="<?php echo $lab['lab_id']; ?>"><?php echo $lab['lab_name']; ?></option>
-            <?php endwhile; ?>
-        </select>
-        <input type="text" name="new_lab_name" placeholder="Yeni Lab Adı" required>
-        <button type="submit" name="update_lab">Güncelle</button>
-        <button type="submit" name="delete_lab">Sil</button>
-    </form>
-
-    <!-- Add New Lab Form -->
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-        <h3>Yeni Lab Ekle</h3>
-        <input type="text" name="new_lab_name" placeholder="Lab Adı" required>
-        <button type="submit" name="add_lab">Ekle</button>
-    </form>
-
-    <hr>
-
-    <!-- Manage Computers Section -->
-    <h2>Bilgisayar Yönetimi</h2>
-
-    <!-- Update Computer Form -->
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-        <h3>Bilgisayarları Güncelle</h3>
-        <select name="bilg_id">
-            <?php foreach ($labs as $lab) : ?>
-                <optgroup label="<?php echo $lab['lab_name']; ?>">
-                    <?php
-                    $computers = getLabComputers($lab['lab_id']);
-                    while ($computer = $computers->fetch_assoc()) :
-                    ?>
-                        <option value="<?php echo $computer['bilg_id']; ?>"><?php echo $computer['islemci']; ?></option>
-                    <?php endwhile; ?>
-                </optgroup>
-            <?php endforeach; ?>
-        </select>
-        <input type="text" name="lab_id" placeholder="Lab ID" required>
-        <input type="text" name="tip" placeholder="Tip" required>
-        <input type="text" name="isletim_sistemi" placeholder="İşletim Sistemi" required>
-        <input type="text" name="sistem_tür" placeholder="Sistem Tür" required>
-        <input type="text" name="islemci" placeholder="İşlemci" required>
-        <input type="text" name="RAM" placeholder="RAM" required>
-        <input type="text" name="ekran_kartı" placeholder="Ekran Kartı" required>
-        <input type="text" name="yüklü_programlar" placeholder="Yüklü Programlar" required>
-        <input type="text" name="status" placeholder="Status" required>
-        <button type="submit" name="update_computer">Güncelle</button>
-        <button type="submit" name="delete_computer">Sil</button>
-    </form>
-
-    <!-- Add New Computer Form -->
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-        <h3>Yeni Bilgisayar Ekle</h3>
-        <input type="text" name="lab_id" placeholder="Lab ID" required>
-        <input type="text" name="tip" placeholder="Tip" required>
-        <input type="text" name="isletim_sistemi" placeholder="İşletim Sistemi" required>
-        <input type="text" name="sistem_tür" placeholder="Sistem Tür" required>
-        <input type="text" name="islemci" placeholder="İşlemci" required>
-        <input type="text" name="RAM" placeholder="RAM" required>
-        <input type="text" name="ekran_kartı" placeholder="Ekran Kartı" required>
-        <input type="text" name="yüklü_programlar" placeholder="Yüklü Programlar" required>
-        <input type="text" name="status" placeholder="Status" required>
-        <button type="submit" name="add_computer">Ekle</button>
-    </form>
-
-    <hr>
-
-    <!-- Manage Computer Types Section -->
-    <h2>Bilgisayar Türleri Yönetimi</h2>
-
-    <table border="1">
-        <tr>
-            <th>Tip No</th>
-            <th>İşletim Sistemi</th>
-            <th>Ekran Kartı</th>
-            <th>RAM</th>
-            <th>Sistem Türü</th>
-            <th>İşlemci</th>
-        </tr>
-        <?php while ($type = $computer_types->fetch_assoc()) : ?>
-            <tr>
-                <td><?php echo $type['tip_no']; ?></td>
-                <td><?php echo $type['isletim_sistemi']; ?></td>
-                <td><?php echo $type['ekran_kartı']; ?></td>
-                <td><?php echo $type['RAM']; ?></td>
-                <td><?php echo $type['sistem_tür']; ?></td>
-                <td><?php echo $type['islemci']; ?></td>
-            </tr>
-        <?php endwhile; ?>
-    </table>
-
+    <!-- JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
 
-<?php
-// Close database connection
-$conn->close();
-?>
 
